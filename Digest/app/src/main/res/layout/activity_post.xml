@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/post_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="#fff"
+        />
+
+    <ScrollView
+        android:layout_below="@+id/post_toolbar"
+        android:id="@+id/post_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/post_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="5dp"
+            android:padding="20dp">
+            <ImageButton
+                android:id="@+id/post_imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="245dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="15dp"
+                android:background="@mipmap/add_btn" />
+
+            <EditText
+                android:id="@+id/post_TitleEt"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint=" Add Title"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/post_descriptionEt"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:inputType="textMultiLine"
+                android:lines="8"
+                android:minLines="6"
+                android:gravity="top|left"
+                android:scrollbars="vertical"
+                android:ems="10"
+                android:hint="Add Article Body"
+                />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/post_button_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:text="Post Article"
+                android:background="@drawable/curvy_button"/>
+        </LinearLayout>
+    </ScrollView>
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/post_progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:visibility="invisible"/>
+</RelativeLayout>
