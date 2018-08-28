@@ -10,7 +10,7 @@ This section explains the steps to build and run the project for Android device 
 * Open the downloaded project with Android studio
 * If error occurs while opening,follow, the necessary instructions that will be shown to your in the IDE
 * If running on an android device, please perform the following steps:
-** Connect the android device to the computer with a USB cable.
+  1. Connect the android device to the computer with a USB cable.
 ** Enable USB Debugging on the android device by doing the following:
 *** On the android device, open Settings.
 *** Tap About tablet. If your android device is a phone, this option is About phone.
