@@ -1,4 +1,4 @@
-# Android Build Instructions
+# Android Build Instructions For Digest
 This section explains the steps to build and run the project for Android device or emulator
 
 # Prerequisites for building  for Android
@@ -21,4 +21,9 @@ This section explains the steps to build and run the project for Android device 
 
 
 **NB**:  I have a built apk in the apks folder, you can test that on your phone. Get the apk from here, https://github.com/OMENSAH/Android-Ebook/tree/master/apks
+
+
+# Running the Backend
+* npm install 
+* npm start
 
