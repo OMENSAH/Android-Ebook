@@ -26,13 +26,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.MyViewHo
     }
     @NonNull
     @Override
-    public ArticleAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.article_list_item, parent, false);
         return new MyViewHolder(view, context);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ArticleAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         Article article = articles.get(position);
         holder.imageView.setImageResource(article.getImageId());
         holder.textView.setText(article.getTitle());

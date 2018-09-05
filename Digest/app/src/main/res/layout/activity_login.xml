@@ -11,10 +11,10 @@
         />
 
     <ScrollView
-        android:layout_below="@+id/login_toolbar"
+        android:layout_centerInParent="true"
         android:id="@+id/main_scrollview_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/login_linearlayout_form"
@@ -31,57 +31,16 @@
                 android:layout_marginRight="15dp"
                 android:src="@drawable/backgroud"
                 />
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/login_textInputLayout_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/main_editText_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/login_textInputLayout_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/login_editText_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:layout_marginTop="20dp"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    />
-            </android.support.design.widget.TextInputLayout>
-
             <Button
                 android:id="@+id/login_button_login"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Sign In"
+                android:text="Sign In With Auth0"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:background="@drawable/curvy_button"/>
-
-
-                <TextView android:id="@+id/login_textView_register"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Register"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:textColor="@color/linkBlue"
-                    android:layout_gravity="center"/>
-
         </LinearLayout>
     </ScrollView>
 
