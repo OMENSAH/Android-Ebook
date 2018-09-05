@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(@NonNull com.auth0.android.result.Credentials credentials) {
+                        credentialsManager.saveCredentials(credentials);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -106,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                                 UIUtils.hideProgressBar(progressBar);
                             }
                         });
-                        credentialsManager.saveCredentials(credentials);
                     }
                 });
     }

@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.auth0.android.Auth0;
@@ -30,9 +32,11 @@ import bawo.digest.adapters.ArticleAdapter;
 import bawo.digest.data.MockArticleData;
 import bawo.digest.fragments.NavigationDrawerFragment;
 import bawo.digest.utils.Constants;
+import bawo.digest.utils.UIUtils;
 
 public class DashboardActivity extends AppCompatActivity {
     private Toolbar toolbar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void initializeViews(){
         toolbar = findViewById(R.id.dashboard_toolbar);
+        progressBar = findViewById(R.id.dashboard_progressBar);
     }
 
     private void setupDrawer() {
@@ -93,23 +98,26 @@ public class DashboardActivity extends AppCompatActivity {
         credentialsManager.getCredentials((new BaseCallback<Credentials, CredentialsManagerException>() {
             @Override
             public void onSuccess(Credentials credentials) {
-                Constants.ACCESSTOKEN = credentials.getAccessToken();
-
+                if(credentials.getAccessToken() == null){
+                    Toast.makeText(DashboardActivity.this, "NO Access Token Set", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Log.d("Access", "onSuccess: "+ credentials.getAccessToken());
+                getArticlesHandler(credentials.getAccessToken());
             }
-
             @Override
             public void onFailure(CredentialsManagerException error) {
 
             }
         }));
-        if (Constants.ACCESSTOKEN == null) {
-            Toast.makeText(DashboardActivity.this, "Token not found. Log in first.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    }
+
+    private void getArticlesHandler(String accessToken){
+        UIUtils.showProgressBar(progressBar);
         final Request.Builder reqBuilder = new Request.Builder()
                 .get()
                 .url(Constants.BASE_URL+"/private");
-        reqBuilder.addHeader("Authorization", "Bearer " + Constants.ACCESSTOKEN);
+        reqBuilder.addHeader("Authorization", "Bearer " + accessToken);
         OkHttpClient client = new OkHttpClient();
         Request request = reqBuilder.build();
         client.newCall(request).enqueue(new Callback() {
@@ -118,21 +126,27 @@ public class DashboardActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(DashboardActivity.this, "An error occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        UIUtils.hideProgressBar(progressBar);
+                        Toast.makeText(DashboardActivity.this, "Request error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
-
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(final Response response) throws IOException {
+                final String responseData = response.body().string();
                 if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                } else {
-                    final String responseData = response.body().string();
-                    // Run view-related code back on the main thread
-                    DashboardActivity.this.runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            UIUtils.hideProgressBar(progressBar);
+                            Toast.makeText(DashboardActivity.this, "Response error: " + responseData, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            UIUtils.hideProgressBar(progressBar);
                             Toast.makeText(DashboardActivity.this, responseData, Toast.LENGTH_SHORT).show();
                         }
                     });
