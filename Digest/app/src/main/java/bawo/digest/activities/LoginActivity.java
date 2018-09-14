@@ -21,8 +21,11 @@ import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
 
+import java.util.HashMap;
+
 import bawo.digest.R;
 import bawo.digest.utils.Constants;
+import bawo.digest.utils.SharedPreferenceUtils;
 import bawo.digest.utils.UIUtils;
 
 public class LoginActivity extends AppCompatActivity {
@@ -31,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private SecureCredentialsManager credentialsManager;
     public static final String ACCESS_TOKEN = "com.auth0.ACCESS_TOKEN";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(CredentialsManagerException error) {
-                //Authentication cancelled by the user. Exit the app
-//                finish();
+                Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -83,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         WebAuthProvider.init(auth0)
                 .withScheme("demo")
                 .withAudience("DigestApp-API")
-                .withScope("openid offline_access")
+                .withScope("\"openid profile email offline_access")
                 .start(LoginActivity.this, new AuthCallback() {
                     @Override
                     public void onFailure(@NonNull Dialog dialog) {
@@ -113,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(LoginActivity.this, "Successfully Logged", Toast.LENGTH_SHORT).show();
+//                                SharedPreferenceUtils.getInstance(getApplicationContext()).setValue("loggedInUserEmail", );
                                 showNextActivity(credentials);
                             }
                         });

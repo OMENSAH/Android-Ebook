@@ -33,6 +33,7 @@ public class DashboardActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ProgressBar progressBar;
     ArrayList<Article> articles;
+    private String accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class DashboardActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.add:
                         intent = new Intent(DashboardActivity.this, PostActivity.class);
+                        intent.putExtra(LoginActivity.ACCESS_TOKEN, accessToken);
                         break;
 
                     case R.id.review:
@@ -88,7 +90,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void getArticles(){
         if(getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN) != null){
-            String accessToken = getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN);
+            accessToken = getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN);
             getArticlesHandler(accessToken);
         }
     }

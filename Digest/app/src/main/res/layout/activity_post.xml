@@ -33,7 +33,7 @@
                 android:background="@mipmap/add_btn" />
 
             <EditText
-                android:id="@+id/post_TitleEt"
+                android:id="@+id/post_Title"
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:inputType="textPersonName" />
 
             <EditText
-                android:id="@+id/post_descriptionEt"
+                android:id="@+id/post_description"
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
