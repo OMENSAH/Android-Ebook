@@ -3,10 +3,21 @@ const app = express();
 
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-
+const cors = require("cors");
 const articleRoutes = require("./api/routes/articles");
+const mongoose = require('mongoose');
 
-app.use('/', articleRoutes);
+mongoose.connect(
+    'mongodb://olivermensah:12345digest@ds157422.mlab.com:57422/digest'
+).then(res=>console.log("Connnected")).catch(err=> console.log(err));
+
+
+app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+app.use(cors());
+
+app.use('/articles', articleRoutes);
 
 app.use((req,res,next) => {
     const error = new Error("Not Found");
@@ -24,9 +35,5 @@ app.use((error, req, res, next) => {
     });
 });
 
-
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended:true}));
-app.use(bodyParser.json());
 
 module.exports = app;

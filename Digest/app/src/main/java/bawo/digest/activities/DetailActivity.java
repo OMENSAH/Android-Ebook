@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import bawo.digest.R;
 import bawo.digest.models.Article;
 
@@ -37,9 +39,11 @@ public class DetailActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             article =  (Article) getIntent().getSerializableExtra("clickedArticle");
-            imageView.setImageResource(article.getImageId());
+            Picasso.get()
+                    .load(article.getFeaturedImage())
+                    .into(imageView);
             title.setText(article.getTitle());
-            body.setText(article.getDetails());
+            body.setText(article.getBody());
         }
 
 
@@ -49,7 +53,7 @@ public class DetailActivity extends AppCompatActivity {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBody = article.getTitle() + "\n\n "+
-                        article.getDetails().substring(0, 100) +"..."
+                        article.getBody().substring(0, 100) +"..."
                         + "\n\n Interested in Getting Student News In Ghana? Download Student News Digest from Playstore"
                         ;
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");

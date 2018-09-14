@@ -4,7 +4,6 @@ package bawo.digest.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -81,10 +80,15 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     private void logout() {
-        Intent intent = new Intent(context.getApplicationContext(), LoginActivity.class);
-        intent.putExtra(Constants.KEY_CLEAR_CREDENTIALS, true);
-        context.startActivity(intent);
-        ((Activity)context).finish();
+        ((Activity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(context.getApplicationContext(), LoginActivity.class);
+                intent.putExtra(Constants.KEY_CLEAR_CREDENTIALS, true);
+                context.startActivity(intent);
+                ((Activity)context).finish();
+            }
+        });
     }
 
 

@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 public class Article implements Serializable{
     private String title;
-    private String details;
-    private int imageId;
+    private String author;
+    private String body;
+    private String featuredImage;
 
     public String getTitle() {
         return title;
@@ -15,28 +16,37 @@ public class Article implements Serializable{
         this.title = title;
     }
 
-    public String getDetails() {
-        return details;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public int getImageId() {
-        return imageId;
+    public String getBody() {
+        return body;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getFeaturedImage() {
+        return featuredImage;
+    }
+
+    public void setFeaturedImage(String featuredImage) {
+        this.featuredImage = featuredImage;
     }
 
     @Override
     public String toString() {
         return "Article{" +
                 "title='" + title + '\'' +
-                ", details='" + details + '\'' +
-                ", imageId=" + imageId +
+                ", author='" + author + '\'' +
+                ", body='" + body + '\'' +
+                ", featuredImage='" + featuredImage + '\'' +
                 '}';
     }
 }

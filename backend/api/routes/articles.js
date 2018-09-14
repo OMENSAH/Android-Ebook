@@ -1,25 +1,80 @@
-const checkJwt  = require("../middleware/check-auth");
-const scopes = require("../middleware/check-scope");
+const jwtCheck  = require("../middleware/check-auth");
 const express = require('express');
 const router = express.Router();
-router.get('/api/public', (req, res)=> {
-    res.json({
-      message: 'Hello from a public endpoint! You don\'t need to be authenticated to see this.'
-    });
-  });
-  
-  // This route need authentication
-  router.get('/api/private', checkJwt, (req, res) =>{
-    res.json({
-      message: 'Hello from a private endpoint! You need to be authenticated to see this.'
-    });
-  });
+const mongoose = require('mongoose');
+const Article = require('../../models/article');
 
-  router.get('/api/private-scoped', checkJwt, scopes.readScope, function(req, res) {
-  res.json({
-    message: 'Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this.'
-  });
+router.get("/all-articles", jwtCheck,(req, res, next) => {
+    Article.find()
+    .exec()
+    .then(docs => {
+        const response = docs.map(doc => {
+                return {
+                    title: doc.title,
+                    author: doc.author,
+                    _id: doc._id,
+                    featuredImage: doc.featuredImage,
+                    body: doc.body,
+                };
+            });
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
 });
 
+router.get("/article-details/:articleId", jwtCheck,(req,res,next) => {
+    const id = req.params.articleId;
+    Article.find({_id:id})
+    .exec()
+    .then(docs => {
+        const response = {
+            book: docs.map(doc => {
+                return {
+                  title: doc.title,
+                  author: doc.author,
+                  _id: doc._id,
+                  featuredImage: doc.featuredImage,
+                  body: doc.body,
+              };
+            })
+        };
+        res.status(200).json(response);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error:err
+        });
+    });
+});
 
+router.post("/add-article", jwtCheck, (req, res, next) => {
+    const article = new Article({
+        _id: new mongoose.Types.ObjectId(),
+        title:req.body.title,
+        author:req.body.author,
+        featuredImage: req.body.featuredImage,
+        body:req.body.body,
+    });
+    article
+    .save()
+    .then(result => {
+        console.log(result);
+        res.status(201).json({
+            message:"Article successfully added",
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error:err
+        });
+    });
+});
 module.exports = router;
+  

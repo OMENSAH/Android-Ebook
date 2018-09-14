@@ -7,36 +7,32 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.auth0.android.Auth0;
-import com.auth0.android.authentication.AuthenticationAPIClient;
-import com.auth0.android.authentication.storage.CredentialsManagerException;
-import com.auth0.android.authentication.storage.SecureCredentialsManager;
-import com.auth0.android.authentication.storage.SharedPreferencesStorage;
-import com.auth0.android.callback.BaseCallback;
-import com.auth0.android.result.Credentials;
-import com.squareup.okhttp.Call;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import bawo.digest.R;
 import bawo.digest.adapters.ArticleAdapter;
-import bawo.digest.data.MockArticleData;
 import bawo.digest.fragments.NavigationDrawerFragment;
+import bawo.digest.models.Article;
 import bawo.digest.utils.Constants;
 import bawo.digest.utils.UIUtils;
 
 public class DashboardActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ProgressBar progressBar;
+    ArrayList<Article> articles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +41,7 @@ public class DashboardActivity extends AppCompatActivity {
         initializeViews();
         setupDrawer();
         setupMenu();
-        setupRecyclerView();
+        articles = new ArrayList<>();
         getArticles();
     }
 
@@ -81,9 +77,9 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(ArrayList<Article> articles) {
         RecyclerView recyclerView = findViewById(R.id.dashboard_recyclerView);
-        ArticleAdapter adapter = new ArticleAdapter(this, MockArticleData.getData());
+        ArticleAdapter adapter = new ArticleAdapter(this, articles);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -91,32 +87,17 @@ public class DashboardActivity extends AppCompatActivity {
 
 
     private void getArticles(){
-        Auth0 auth0 = new Auth0(this);
-        auth0.setOIDCConformant(true);
-        AuthenticationAPIClient authenticationAPIClient = new AuthenticationAPIClient(auth0);
-        SecureCredentialsManager credentialsManager = new SecureCredentialsManager(this, authenticationAPIClient, new SharedPreferencesStorage(this));
-        credentialsManager.getCredentials((new BaseCallback<Credentials, CredentialsManagerException>() {
-            @Override
-            public void onSuccess(Credentials credentials) {
-                if(credentials.getAccessToken() == null){
-                    Toast.makeText(DashboardActivity.this, "NO Access Token Set", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Log.d("Access", "onSuccess: "+ credentials.getAccessToken());
-                getArticlesHandler(credentials.getAccessToken());
-            }
-            @Override
-            public void onFailure(CredentialsManagerException error) {
-
-            }
-        }));
+        if(getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN) != null){
+            String accessToken = getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN);
+            getArticlesHandler(accessToken);
+        }
     }
 
     private void getArticlesHandler(String accessToken){
         UIUtils.showProgressBar(progressBar);
         final Request.Builder reqBuilder = new Request.Builder()
                 .get()
-                .url(Constants.BASE_URL+"/private");
+                .url(Constants.BASE_URL+"/all-articles");
         reqBuilder.addHeader("Authorization", "Bearer " + accessToken);
         OkHttpClient client = new OkHttpClient();
         Request request = reqBuilder.build();
@@ -134,12 +115,15 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onResponse(final Response response) throws IOException {
                 final String responseData = response.body().string();
-                if (!response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             UIUtils.hideProgressBar(progressBar);
-                            Toast.makeText(DashboardActivity.this, "Response error: " + responseData, Toast.LENGTH_SHORT).show();
+                            Gson gson = new Gson();
+                            Type articleType = new TypeToken<ArrayList<Article>>(){}.getType();
+                            articles = gson.fromJson(responseData, articleType);
+                            setupRecyclerView(articles);
                         }
                     });
                 } else {

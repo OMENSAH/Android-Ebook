@@ -2,23 +2,24 @@ package bawo.digest.activities;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.net.Credentials;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.authentication.AuthenticationAPIClient;
 import com.auth0.android.authentication.AuthenticationException;
+import com.auth0.android.authentication.storage.CredentialsManagerException;
 import com.auth0.android.authentication.storage.SecureCredentialsManager;
 import com.auth0.android.authentication.storage.SharedPreferencesStorage;
+import com.auth0.android.callback.BaseCallback;
 import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthProvider;
+import com.auth0.android.result.Credentials;
 
 import bawo.digest.R;
 import bawo.digest.utils.Constants;
@@ -29,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private Auth0 auth0;
     private ProgressBar progressBar;
     private SecureCredentialsManager credentialsManager;
+    public static final String ACCESS_TOKEN = "com.auth0.ACCESS_TOKEN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +44,24 @@ public class LoginActivity extends AppCompatActivity {
         AuthenticationAPIClient client = new AuthenticationAPIClient(auth0);
         credentialsManager = new SecureCredentialsManager(this, client, new SharedPreferencesStorage(this));
 
-        // Check if the activity was launched after a logout
         if (getIntent().getBooleanExtra(Constants.KEY_CLEAR_CREDENTIALS, false)) {
             credentialsManager.clearCredentials();
         }
-        //checking for session
-        if (credentialsManager.hasValidCredentials()) {
-            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-            finish();
-        }
+
+        // Obtain the existing credentials and move to the next activity
+        credentialsManager.getCredentials(new BaseCallback<Credentials, CredentialsManagerException>() {
+            @Override
+            public void onSuccess(final Credentials credentials) {
+                UIUtils.showProgressBar(progressBar);
+                showNextActivity(credentials);
+            }
+
+            @Override
+            public void onFailure(CredentialsManagerException error) {
+                //Authentication cancelled by the user. Exit the app
+//                finish();
+            }
+        });
     }
 
     private void initializeViews(){
@@ -71,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         UIUtils.showProgressBar(progressBar);
         WebAuthProvider.init(auth0)
                 .withScheme("demo")
-                .withAudience(String.format("https://%s/userinfo", getString(R.string.com_auth0_domain)))
+                .withAudience("DigestApp-API")
                 .withScope("openid offline_access")
                 .start(LoginActivity.this, new AuthCallback() {
                     @Override
@@ -96,21 +107,24 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onSuccess(@NonNull com.auth0.android.result.Credentials credentials) {
+                    public void onSuccess(@NonNull final com.auth0.android.result.Credentials credentials) {
                         credentialsManager.saveCredentials(credentials);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(LoginActivity.this, "Successfully Logged", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                                finish();
-                                UIUtils.hideProgressBar(progressBar);
+                                showNextActivity(credentials);
                             }
                         });
                     }
                 });
     }
 
-
-
+    private void showNextActivity(Credentials credentials) {
+        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+        intent.putExtra(ACCESS_TOKEN, credentials.getAccessToken());
+        startActivity(intent);
+        finish();
+        UIUtils.hideProgressBar(progressBar);
+    }
 }
