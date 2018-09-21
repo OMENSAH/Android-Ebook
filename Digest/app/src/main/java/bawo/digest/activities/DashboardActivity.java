@@ -48,6 +48,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void initializeViews(){
         toolbar = findViewById(R.id.dashboard_toolbar);
+        toolbar.setTitle("Recent Student News");
         progressBar = findViewById(R.id.dashboard_progressBar);
     }
 
@@ -68,7 +69,6 @@ public class DashboardActivity extends AppCompatActivity {
                         intent = new Intent(DashboardActivity.this, PostActivity.class);
                         intent.putExtra(LoginActivity.ACCESS_TOKEN, accessToken);
                         break;
-
                     case R.id.review:
 
                         break;

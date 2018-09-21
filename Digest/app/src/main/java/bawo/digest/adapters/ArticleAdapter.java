@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import bawo.digest.R;
 import bawo.digest.activities.DetailActivity;
 import bawo.digest.models.Article;
+import bawo.digest.utils.Constants;
 
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.MyViewHolder>{
@@ -38,7 +40,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.MyViewHo
         Article article = articles.get(position);
         holder.textView.setText(article.getTitle());
         Picasso.get()
-                .load(article.getFeaturedImage())
+                .load(Constants.BASE_URL + "/"+ article.getFeaturedImage())
                 .into(holder.imageView);
     }
 

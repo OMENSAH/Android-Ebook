@@ -116,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(LoginActivity.this, "Successfully Logged", Toast.LENGTH_SHORT).show();
-//                                SharedPreferenceUtils.getInstance(getApplicationContext()).setValue("loggedInUserEmail", );
                                 showNextActivity(credentials);
                             }
                         });

@@ -7,7 +7,7 @@ const articleSchema = mongoose.Schema({
         unique:true,
     },
     author:String,
-    featuredImage: String,
+    featuredImage:String,
     body: {
         type: String,
         required: true

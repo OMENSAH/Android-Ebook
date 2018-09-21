@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import bawo.digest.R;
 import bawo.digest.models.Article;
+import bawo.digest.utils.Constants;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -40,7 +41,7 @@ public class DetailActivity extends AppCompatActivity {
         if(bundle != null){
             article =  (Article) getIntent().getSerializableExtra("clickedArticle");
             Picasso.get()
-                    .load(article.getFeaturedImage())
+                    .load(Constants.BASE_URL + "/"+article.getFeaturedImage())
                     .into(imageView);
             title.setText(article.getTitle());
             body.setText(article.getBody());

@@ -1,10 +1,23 @@
 const jwtCheck  = require("../middleware/check-auth");
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const multer = require("multer");
 const Article = require('../../models/article');
+// Set The Storage Engine
+let storage	=	multer.diskStorage({
+    destination: function (req, file, callback) {
+      callback(null, './uploads');
+    },
+    filename: function (req, file, callback) {
+      callback(null, file.originalname);
+    }
+});
+let upload = multer({ storage : storage }).any();
 
-router.get("/all-articles", jwtCheck,(req, res, next) => {
+
+router.get("/all-articles", jwtCheck,(req, res) => {
+
     Article.find()
     .exec()
     .then(docs => {
@@ -27,7 +40,7 @@ router.get("/all-articles", jwtCheck,(req, res, next) => {
     });
 });
 
-router.get("/article-details/:articleId", jwtCheck,(req,res,next) => {
+router.get("/article-details/:articleId", jwtCheck,(req,res) => {
     const id = req.params.articleId;
     Article.find({_id:id})
     .exec()
@@ -52,28 +65,42 @@ router.get("/article-details/:articleId", jwtCheck,(req,res,next) => {
         });
     });
 });
-
-router.post("/add-article", jwtCheck, (req, res, next) => {
-    const article = new Article({
-        _id: new mongoose.Types.ObjectId(),
-        title:req.body.title,
-        author:req.body.author,
-        featuredImage: req.body.featuredImage,
-        body:req.body.body,
-    });
-    article
-    .save()
-    .then(result => {
-        console.log(result);
-        res.status(201).json({
-            message:"Article successfully added",
-        });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error:err
-        });
+router.post("/add-article", jwtCheck, (req, res) => {
+    upload(req, res, (err) => {
+        if(err){
+            res.status(500).json({
+                error:err
+            });
+        } else {
+          if(req.files == undefined){
+            res.status(500).json({
+                error:"No File Selected"
+            });
+          } else {
+                console.log(req.files)
+                const article = new Article({
+                    _id: new mongoose.Types.ObjectId(),
+                    title:req.body.title,
+                    author:req.body.author,
+                    featuredImage: req.files[0].originalname,
+                    body:req.body.body,
+                });
+                article
+                .save()
+                .then(result => {
+                    console.log(result);
+                    res.status(201).json({
+                        message:"Article successfully added",
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        error:err
+                    });
+                });
+            }
+        }
     });
 });
 module.exports = router;
