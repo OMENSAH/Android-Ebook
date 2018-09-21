@@ -24,6 +24,7 @@ This section explains the steps to build and run the project for Android device 
 
 
 # Running the Backend
+navigate into the backend folder and perform the following commands on your terminal.
 * npm install 
 * npm start
 
