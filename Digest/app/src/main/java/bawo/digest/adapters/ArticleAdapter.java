@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import bawo.digest.R;
 import bawo.digest.activities.DetailActivity;
@@ -37,8 +39,15 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
+
         Article article = articles.get(position);
+        Log.i("articles", "onBindViewHolder: "+ article.toString());
         holder.textView.setText(article.getTitle());
+        java.text.DateFormat dateFormat = java.text.DateFormat.getDateInstance();
+        if(article.getPosted_on() != null) {
+            String formatedDate = dateFormat.format(new Date(Long.valueOf(article.getPosted_on())).getTime());
+            holder.published.setText("published on " + formatedDate + " by " + article.getAuthor());
+        }
         Picasso.get()
                 .load(Constants.BASE_URL + "/"+ article.getFeaturedImage())
                 .into(holder.imageView);
@@ -51,12 +60,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
-        public TextView textView;
+        public TextView textView, published;
         public MyViewHolder(View itemView, Context ctx) {
             super(itemView);
             context = ctx;
             imageView = itemView.findViewById(R.id.article_image);
             textView = itemView.findViewById(R.id.article_title);
+            published = itemView.findViewById(R.id.article_author);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

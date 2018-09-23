@@ -7,6 +7,15 @@ public class Article implements Serializable{
     private String author;
     private String body;
     private String featuredImage;
+    private String posted_on;
+
+    public String getPosted_on() {
+        return posted_on;
+    }
+
+    public void setPosted_on(String posted_on) {
+        this.posted_on = posted_on;
+    }
 
     public String getTitle() {
         return title;
@@ -47,6 +56,7 @@ public class Article implements Serializable{
                 ", author='" + author + '\'' +
                 ", body='" + body + '\'' +
                 ", featuredImage='" + featuredImage + '\'' +
+                ", posted_on='" + posted_on + '\'' +
                 '}';
     }
 }

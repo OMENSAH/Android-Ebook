@@ -11,11 +11,22 @@
 		android:background="@color/colorPrimary">
 
 		<ImageView
+			android:id="@+id/profile_image"
 			android:layout_width="70dp"
 			android:layout_height="70dp"
 			android:layout_centerInParent="true"
 			android:scaleType="fitCenter"
 			android:src="@drawable/ic_profile"/>
+		<TextView
+			android:textStyle="bold"
+			android:textSize="20sp"
+			android:layout_marginTop="10dp"
+			android:id="@+id/profile_name"
+			android:layout_below="@+id/profile_image"
+			android:layout_width="match_parent"
+			android:text="user"
+			android:gravity="center"
+			android:layout_height="wrap_content" />
 
 	</RelativeLayout>
 

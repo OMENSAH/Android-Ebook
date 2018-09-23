@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         WebAuthProvider.init(auth0)
                 .withScheme("demo")
                 .withAudience("DigestApp-API")
-                .withScope("\"openid profile email offline_access")
+                .withScope("openid profile email offline_access read:current_user update:current_user_metadata")
                 .start(LoginActivity.this, new AuthCallback() {
                     @Override
                     public void onFailure(@NonNull Dialog dialog) {

@@ -28,6 +28,7 @@ router.get("/all-articles", jwtCheck,(req, res) => {
                     _id: doc._id,
                     featuredImage: doc.featuredImage,
                     body: doc.body,
+                    posted_on:doc.posted_on
                 };
             });
         res.status(200).json(response);
@@ -53,6 +54,7 @@ router.get("/article-details/:articleId", jwtCheck,(req,res) => {
                   _id: doc._id,
                   featuredImage: doc.featuredImage,
                   body: doc.body,
+                  posted_on: doc.posted_on
               };
             })
         };
@@ -84,6 +86,7 @@ router.post("/add-article", jwtCheck, (req, res) => {
                     author:req.body.author,
                     featuredImage: req.files[0].originalname,
                     body:req.body.body,
+                    posted_on: req.body.posted_on
                 });
                 article
                 .save()

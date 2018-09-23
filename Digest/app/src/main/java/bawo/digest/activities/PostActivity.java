@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 import bawo.digest.R;
+import bawo.digest.models.Article;
 import bawo.digest.utils.Constants;
 import bawo.digest.utils.UIUtils;
 import okhttp3.Call;
@@ -91,16 +92,23 @@ public class PostActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MultipartBody body = uploadRequestBody(
-                        articleTitle.getText().toString(),
-                        articleBody.getText().toString(), "author",
-                        new File(imagePath)
-                );
-                try {
-                    postArticle(body, accessToken);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if(imagePath != null && !articleBody.getText().toString().equals("") && !articleTitle.getText().toString().equals("")) {
+                    Article article = new Article();
+                    article.setTitle(  articleTitle.getText().toString());
+                    article.setBody(articleBody.getText().toString());
+                    article.setAuthor("author");
+                    article.setFeaturedImage(imagePath);
+                    article.setPosted_on(String.valueOf(System.currentTimeMillis()));
+                    MultipartBody body = uploadRequestBody(article);
+                    try {
+                        postArticle(body, accessToken);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    Toast.makeText(PostActivity.this, "Complete the form", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -193,21 +201,20 @@ public class PostActivity extends AppCompatActivity {
         return path;
     }
 
-    public  MultipartBody uploadRequestBody(String title, String body, String author, File file) {
-
+    public  MultipartBody uploadRequestBody(Article article) {
+        File file = new File(article.getFeaturedImage());
         MediaType MEDIA_TYPE = MediaType.parse("image/jpeg");
         return new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("action", "upload")
-                .addFormDataPart("format", "json")
                 .addFormDataPart("featuredImage", file.getName(), RequestBody.create(MEDIA_TYPE, file))
-                .addFormDataPart("body", body)
-                .addFormDataPart("title", title)
-                .addFormDataPart("author", author)
+                .addFormDataPart("body", article.getBody())
+                .addFormDataPart("title", article.getTitle())
+                .addFormDataPart("author", article.getAuthor())
+                .addFormDataPart("posted_on", article.getPosted_on())
                 .build();
     }
 
-    private void postArticle(RequestBody body, String accessToken) throws IOException {
+    private void postArticle(RequestBody body, final String accessToken) throws IOException {
         Log.i("me", "postArticle: "+ body.toString());
         UIUtils.showProgressBar(progressBar);
         Request.Builder reqBuilder = new Request.Builder()
@@ -236,8 +243,10 @@ public class PostActivity extends AppCompatActivity {
                         public void run() {
                             UIUtils.hideProgressBar(progressBar);
                             Toast.makeText(PostActivity.this, responseData, Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(PostActivity.this, DashboardActivity.class));
-                            finish();
+                            Intent intent =  new Intent(PostActivity.this, DashboardActivity.class);
+                            intent.putExtra(LoginActivity.ACCESS_TOKEN, accessToken);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         }
                     });
                 } else {
