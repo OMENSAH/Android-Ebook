@@ -21,11 +21,8 @@ import com.auth0.android.provider.AuthCallback;
 import com.auth0.android.provider.WebAuthProvider;
 import com.auth0.android.result.Credentials;
 
-import java.util.HashMap;
-
 import bawo.digest.R;
 import bawo.digest.utils.Constants;
-import bawo.digest.utils.SharedPreferenceUtils;
 import bawo.digest.utils.UIUtils;
 
 public class LoginActivity extends AppCompatActivity {

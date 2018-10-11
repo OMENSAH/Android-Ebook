@@ -13,7 +13,6 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,8 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,7 +162,6 @@ public class PostActivity extends AppCompatActivity {
         alert.show();
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -254,7 +250,7 @@ public class PostActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             UIUtils.hideProgressBar(progressBar);
-                            Toast.makeText(PostActivity.this, "Request error: " + responseData, Toast.LENGTH_LONG).show();
+                            Toast.makeText(PostActivity.this, "Data Failure: " + responseData, Toast.LENGTH_LONG).show();
                         }
                     });
                 }
