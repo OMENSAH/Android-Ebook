@@ -20,7 +20,6 @@ This section explains the steps to build and run the project for Android device 
   1. Just click on the Run button and select an emulator that will run the app.
 
 
-**NB**:  I have a built apk in the apks folder, you can test that on your phone. Get the apk from here, https://github.com/OMENSAH/Android-Ebook/tree/master/apks
 
 
 # Running the Backend
