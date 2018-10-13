@@ -5,9 +5,13 @@ const cors = require("cors");
 const articleRoutes = require("./api/routes/articles");
 const mongoose = require('mongoose');
 const bodyParser =	require("body-parser");
+require('dotenv').config();
 
+if (!process.env.DB) {
+  throw 'Make sure you have DB in your .env file';
+}
 mongoose.connect(
-    'mongodb://olivermensah:12345digest@ds157422.mlab.com:57422/digest'
+    process.env.DB
 ).then(res=>console.log("Connnected")).catch(err=> console.log(err));
 
 app.use(morgan('dev'));
