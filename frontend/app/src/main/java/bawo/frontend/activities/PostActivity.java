@@ -64,8 +64,8 @@ public class PostActivity extends AppCompatActivity {
         setupWidgets();
 
 
-        if (getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN) != null)
-            accessToken = getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN);
+        if (getIntent().getStringExtra(Constants.ACCESS_TOKEN) != null)
+            accessToken = getIntent().getStringExtra(Constants.ACCESS_TOKEN);
         setEventListeners();
     }
 
@@ -81,9 +81,7 @@ public class PostActivity extends AppCompatActivity {
         articleImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_CODE);
+                canSelectImage();
             }
         });
         button.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +109,19 @@ public class PostActivity extends AppCompatActivity {
 
     }
 
+    private void canSelectImage(){
+        if(checkPermissionREAD_EXTERNAL_STORAGE(this)){
+            chooseImage();
+        }else{
+            Toast.makeText(this, "No Permissions", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void chooseImage(){
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, GALLERY_CODE);
+    }
+
     public boolean checkPermissionREAD_EXTERNAL_STORAGE(final Context context) {
         int currentAPIVersion = Build.VERSION.SDK_INT;
         if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
@@ -134,14 +145,13 @@ public class PostActivity extends AppCompatActivity {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Do Stuff
+                    chooseImage();
                 } else {
                     Toast.makeText(PostActivity.this, "Excess to Read External Storage Denied",     Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
-                super.onRequestPermissionsResult(requestCode, permissions,
-                        grantResults);
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -172,10 +182,7 @@ public class PostActivity extends AppCompatActivity {
             } else {
                 filePath = data.getData();
                 articleImage.setImageURI(filePath);
-                if(checkPermissionREAD_EXTERNAL_STORAGE(this)){
-                   imagePath = getPath(filePath);
-                }
-
+                imagePath = getPath(filePath);
             }
         }
     }
@@ -240,7 +247,7 @@ public class PostActivity extends AppCompatActivity {
                             UIUtils.hideProgressBar(progressBar);
                             Toast.makeText(PostActivity.this, responseData, Toast.LENGTH_LONG).show();
                             Intent intent =  new Intent(PostActivity.this, DashboardActivity.class);
-                            intent.putExtra(LoginActivity.ACCESS_TOKEN, accessToken);
+                            intent.putExtra(Constants.ACCESS_TOKEN, accessToken);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         }

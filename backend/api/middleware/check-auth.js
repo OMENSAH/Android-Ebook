@@ -7,7 +7,6 @@ const jwtCheck = jwt({
         jwksRequestsPerMinute: 5,
         jwksUri: "https://olivermensah96.au.auth0.com/.well-known/jwks.json"
     }),
-    audience: 'DigestApp-API',
     issuer: "https://olivermensah96.au.auth0.com/",
     algorithms: ['RS256']
 });

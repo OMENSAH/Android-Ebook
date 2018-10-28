@@ -85,14 +85,25 @@ public class DashboardActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        if(getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN) != null){
-            accessToken = getIntent().getStringExtra(LoginActivity.ACCESS_TOKEN);
-            getArticles(accessToken);
-            Auth0 auth0 = new Auth0(this);
-            authenticationAPIClient = new AuthenticationAPIClient(auth0);
-            usersClient = new UsersAPIClient(auth0, accessToken);
-            getProfile(accessToken);
-        }
+//        if(getIntent().getStringExtra(Constants.ACCESS_TOKEN) != null ){
+//            accessToken = getIntent().getStringExtra(Constants.ACCESS_TOKEN);
+//            getArticles(accessToken);
+//            Auth0 auth0 = new Auth0(this);
+//            authenticationAPIClient = new AuthenticationAPIClient(auth0);
+//            usersClient = new UsersAPIClient(auth0, accessToken);
+//            getProfile(accessToken);
+//        }
+
+        //Obtain the token from the Intent's extras
+        String accessToken = getIntent().getStringExtra(Constants.ACCESS_TOKEN);
+
+        Auth0 auth0 = new Auth0(this);
+        auth0.setOIDCConformant(true);
+        auth0.setLoggingEnabled(true);
+        authenticationAPIClient = new AuthenticationAPIClient(auth0);
+        usersClient = new UsersAPIClient(auth0, accessToken);
+        getProfile(accessToken);
+        getArticles(accessToken);
     }
 
     private void setupDrawer() {
@@ -110,10 +121,7 @@ public class DashboardActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.add:
                         intent = new Intent(DashboardActivity.this, PostActivity.class);
-                        intent.putExtra(LoginActivity.ACCESS_TOKEN, accessToken);
-                        break;
-                    case R.id.review:
-
+                        intent.putExtra(Constants.ACCESS_TOKEN, accessToken);
                         break;
                 }
                 startActivity(intent);
@@ -196,10 +204,10 @@ public class DashboardActivity extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onFailure(final ManagementException error) {
+                                    public void onFailure(ManagementException error) {
                                         runOnUiThread(new Runnable() {
                                             public void run() {
-                                                Toast.makeText(DashboardActivity.this, "Error: "+  error.getMessage(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(DashboardActivity.this, "User Profile Request Failed", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
@@ -207,10 +215,10 @@ public class DashboardActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(final AuthenticationException error) {
+                    public void onFailure(AuthenticationException error) {
                         runOnUiThread(new Runnable() {
                             public void run() {
-                                Toast.makeText(DashboardActivity.this,  "Error: "+  error.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DashboardActivity.this, "User Info Request Failed", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

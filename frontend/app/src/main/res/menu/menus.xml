@@ -8,10 +8,4 @@
         android:orderInCategory="100"
         android:title="Add Article"
         app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/review"
-        android:orderInCategory="100"
-        android:title="Review Articles"
-        app:showAsAction="never"/>
 </menu>
