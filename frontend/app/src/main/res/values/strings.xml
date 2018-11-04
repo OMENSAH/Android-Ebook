@@ -4,4 +4,7 @@
     <string name="drawer_close">Close</string>
     <string name="com_auth0_client_id">ET2D7JDnBjaltPYiVv9Jl5SCijMz0rSC</string>
     <string name="com_auth0_domain">olivermensah96.au.auth0.com</string>
+    <string name="update">Update Info</string>
+    <string name="title_update">Account Settings</string>
+    <string name="name">Name</string>
 </resources>

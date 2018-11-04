@@ -54,7 +54,7 @@ public class DetailActivity extends AppCompatActivity {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBody = article.getTitle() + "\n\n "+
-                        article.getBody().substring(0, 100) +"..."
+                        article.getBody() +"..."
                         + "\n\n Interested in Getting Student News In Ghana? Download Student News Digest from Playstore"
                         ;
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");

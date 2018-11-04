@@ -7,4 +7,6 @@
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="grayColor">#8f8f8f</color>
     <color name="linkBlue">#4d94ff</color>
+    <color name="gray">#7e7e7e</color>
+    <color name="black_effective">#2a2a2a</color>
 </resources>

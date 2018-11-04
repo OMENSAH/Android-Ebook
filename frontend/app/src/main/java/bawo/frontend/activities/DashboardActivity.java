@@ -48,7 +48,7 @@ public class DashboardActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private ArrayList<Article> articles;
-    private String accessToken;
+    public static String accessToken;
     private ArticleAdapter articleAdapter;
 
     private AuthenticationAPIClient authenticationAPIClient;
@@ -85,25 +85,17 @@ public class DashboardActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-//        if(getIntent().getStringExtra(Constants.ACCESS_TOKEN) != null ){
-//            accessToken = getIntent().getStringExtra(Constants.ACCESS_TOKEN);
-//            getArticles(accessToken);
-//            Auth0 auth0 = new Auth0(this);
-//            authenticationAPIClient = new AuthenticationAPIClient(auth0);
-//            usersClient = new UsersAPIClient(auth0, accessToken);
-//            getProfile(accessToken);
-//        }
-
         //Obtain the token from the Intent's extras
-        String accessToken = getIntent().getStringExtra(Constants.ACCESS_TOKEN);
-
-        Auth0 auth0 = new Auth0(this);
-        auth0.setOIDCConformant(true);
-        auth0.setLoggingEnabled(true);
-        authenticationAPIClient = new AuthenticationAPIClient(auth0);
-        usersClient = new UsersAPIClient(auth0, accessToken);
-        getProfile(accessToken);
-        getArticles(accessToken);
+        if(getIntent().getStringExtra(Constants.ACCESS_TOKEN) != null ){
+            accessToken = getIntent().getStringExtra(Constants.ACCESS_TOKEN);
+            Auth0 auth0 = new Auth0(this);
+            auth0.setOIDCConformant(true);
+            auth0.setLoggingEnabled(true);
+            authenticationAPIClient = new AuthenticationAPIClient(auth0);
+            usersClient = new UsersAPIClient(auth0, accessToken);
+            getProfile(accessToken);
+            getArticles(accessToken);
+        }
     }
 
     private void setupDrawer() {
@@ -122,6 +114,7 @@ public class DashboardActivity extends AppCompatActivity {
                     case R.id.add:
                         intent = new Intent(DashboardActivity.this, PostActivity.class);
                         intent.putExtra(Constants.ACCESS_TOKEN, accessToken);
+                        intent.putExtra(Constants.User, userProfile.getName());
                         break;
                 }
                 startActivity(intent);
@@ -227,7 +220,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void refreshInformation() {
         TextView userNameTextView = findViewById(R.id.profile_name);
-        userNameTextView.setText(userProfile.getName());
+        userNameTextView.setText( userProfile.getUserMetadata().get("name") != null ? userProfile.getUserMetadata().get("name") .toString(): userProfile.getName());
         ImageView userPicture =  findViewById(R.id.profile_image);
         if (userProfile.getPictureURL() != null) {
             Picasso.get()

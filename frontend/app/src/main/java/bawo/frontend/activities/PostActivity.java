@@ -42,6 +42,8 @@ import okhttp3.Response;
 public class PostActivity extends AppCompatActivity {
     //access token from Auth0
     private String accessToken;
+    //user
+    private String user;
     //declaring views
     private ImageButton articleImage;
     private EditText articleTitle;
@@ -62,10 +64,10 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
         setupWidgets();
-
-
-        if (getIntent().getStringExtra(Constants.ACCESS_TOKEN) != null)
+        if (getIntent().getStringExtra(Constants.ACCESS_TOKEN) != null || getIntent().getStringExtra(Constants.User) != null ){
             accessToken = getIntent().getStringExtra(Constants.ACCESS_TOKEN);
+            user = getIntent().getStringExtra(Constants.User);
+        }
         setEventListeners();
     }
 
@@ -91,7 +93,7 @@ public class PostActivity extends AppCompatActivity {
                     Article article = new Article();
                     article.setTitle(  articleTitle.getText().toString());
                     article.setBody(articleBody.getText().toString());
-                    article.setAuthor("author");
+                    article.setAuthor(user);
                     article.setFeaturedImage(imagePath);
                     article.setPosted_on(String.valueOf(System.currentTimeMillis()));
                     MultipartBody body = uploadRequestBody(article);

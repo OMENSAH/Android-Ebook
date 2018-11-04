@@ -24,13 +24,13 @@ public class NavigationDrawerItemData {
 
     private static int[] getImages(){
         return new int[]{
-                R.drawable.newspaper, R.drawable.settings, R.drawable.logout
+                R.drawable.settings, R.drawable.logout
         };
     }
 
     private  static String[] getTitles(){
         return new String[]{
-                "All News", "Account Settings", "Logout"
+                "Account Settings", "Logout"
 
         };
     }

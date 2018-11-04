@@ -16,6 +16,7 @@ import java.util.List;
 
 import bawo.frontend.R;
 import bawo.frontend.activities.LoginActivity;
+import bawo.frontend.activities.SettingsActivity;
 import bawo.frontend.models.NavigationDrawerItem;
 import bawo.frontend.utils.Constants;
 
@@ -47,18 +48,14 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         holder.title.setText(current.getTitle());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                switch (position){
-                    case 0:
-
-                        break;
-                    case 1:
-
-                        break;
-                    case 2:
-                        logout();
-
-                        break;
-                }
+                    switch (position){
+                        case 0:
+                            goToSettings();
+                            break;
+                        case 1:
+                            logout();
+                            break;
+                    }
             }
         });
 
@@ -90,6 +87,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             }
         });
     }
-
+    private void goToSettings(){
+        Intent intent = new Intent(context.getApplicationContext(), SettingsActivity.class);
+        intent.putExtra(Constants.KEY_CLEAR_CREDENTIALS, true);
+        context.startActivity(intent);
+        ((Activity)context).finish();
+    }
 
 }
